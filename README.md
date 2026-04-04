@@ -34,8 +34,8 @@ An Emacs package providing LSP integration for [Oxc](https://oxc.rs) tools - [Ox
 
 The package auto-enables when lsp-mode loads. To configure, add to `~/.doom.d/config.el`:
 ```elisp
-(setq lsp-oxlint-autofix-on-save t)  ; optional
-(setq lsp-oxfmt-format-on-save t)    ; optional
+(setq lsp-oxc-lint-autofix-on-save t)  ; optional
+(setq lsp-oxc-fmt-format-on-save t)    ; optional
 ```
 
 ### straight.el + use-package
@@ -79,20 +79,20 @@ The package auto-enables when lsp-mode loads. To configure, add to `~/.doom.d/co
 ### Auto-fix on save (Oxlint)
 
 ```elisp
-(setq lsp-oxlint-autofix-on-save t)
+(setq lsp-oxc-lint-autofix-on-save t)
 ```
 
 ### Format on save (Oxfmt)
 
 ```elisp
-(setq lsp-oxfmt-format-on-save t)
+(setq lsp-oxc-fmt-format-on-save t)
 ```
 
 ### Custom config file names
 
 ```elisp
-(setq lsp-oxlint-config-file "oxlint.json")
-(setq lsp-oxfmt-config-file "oxfmt.json")
+(setq lsp-oxc-lint-config-file "oxlint.json")
+(setq lsp-oxc-fmt-config-file "oxfmt.json")
 ```
 
 ### Supported file types
@@ -108,8 +108,8 @@ To customize:
 
 | Command                    | Description                              |
 |----------------------------|------------------------------------------|
-| `M-x lsp-oxlint-fix`       | Apply fixable issues in current buffer   |
-| `M-x lsp-oxfmt-format`     | Format current buffer                    |
+| `M-x lsp-oxc-lint-fix`       | Apply fixable issues in current buffer   |
+| `M-x lsp-oxc-fmt-format`     | Format current buffer                    |
 | `M-x lsp-oxc-verify-setup` | Debug activation issues                  |
 
 ## Troubleshooting
