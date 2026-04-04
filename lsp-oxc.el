@@ -170,10 +170,30 @@ Returns non-nil if:
 
 ;;;###autoload
 (defun lsp-oxfmt-format ()
-  "Format the current buffer using oxfmt."
+  "Format the current buffer using oxfmt.
+Calls the oxfmt binary directly via stdin/stdout to avoid LSP
+TextEdit range issues that can truncate file content."
   (interactive)
   (if lsp-oxfmt--activated-p
-      (lsp-format-buffer)
+      (let ((original-point (point))
+            (original-buffer (current-buffer)))
+        (with-temp-buffer
+          (let ((temp-buf (current-buffer))
+                (exit-code
+                 (with-current-buffer original-buffer
+                   (call-process-region (point-min) (point-max)
+                                        lsp-oxfmt--bin-path
+                                        nil temp-buf nil
+                                        "--stdin-filepath"
+                                        (buffer-file-name original-buffer)))))
+            (if (zerop exit-code)
+                (let ((formatted-text (buffer-string)))
+                  (with-current-buffer original-buffer
+                    (unless (string= formatted-text (buffer-string))
+                      (erase-buffer)
+                      (insert formatted-text)
+                      (goto-char (min original-point (point-max))))))
+              (message "Oxfmt: formatting failed (exit code %d)" exit-code)))))
     (message "Oxfmt: Not active in this buffer")))
 
 ;;;###autoload
