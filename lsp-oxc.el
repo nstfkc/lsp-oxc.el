@@ -178,7 +178,7 @@ TextEdit range issues that can truncate file content."
       (let ((original-point (point))
             (original-buffer (current-buffer)))
         (with-temp-buffer
-          (let ((temp-buf (current-buffer))
+          (let* ((temp-buf (current-buffer))
                 (exit-code
                  (with-current-buffer original-buffer
                    (call-process-region (point-min) (point-max)
