@@ -172,28 +172,26 @@ Returns non-nil if:
 (defun lsp-oxc-fmt-format ()
   "Format the current buffer using oxfmt.
 Calls the oxfmt binary directly via stdin/stdout to avoid LSP
-TextEdit range issues that can truncate file content."
+TextEdit range issues that can truncate file content.
+Uses `replace-buffer-contents' to preserve point and markers."
   (interactive)
   (if lsp-oxc-fmt--activated-p
-      (let ((original-point (point))
-            (original-buffer (current-buffer)))
+      (let ((original-buffer (current-buffer))
+            (original-file (buffer-file-name)))
         (with-temp-buffer
-          (let* ((temp-buf (current-buffer))
-                (exit-code
-                 (with-current-buffer original-buffer
-                   (call-process-region (point-min) (point-max)
-                                        lsp-oxc-fmt--bin-path
-                                        nil temp-buf nil
-                                        "--stdin-filepath"
-                                        (buffer-file-name original-buffer)))))
-            (if (zerop exit-code)
-                (let ((formatted-text (buffer-string)))
+          (let* ((fmt-buf (current-buffer))
+                 (exit-code
                   (with-current-buffer original-buffer
-                    (unless (string= formatted-text (buffer-string))
-                      (erase-buffer)
-                      (insert formatted-text)
-                      (goto-char (min original-point (point-max))))))
-              (message "Oxfmt: formatting failed (exit code %d)" exit-code)))))
+                    (call-process-region (point-min) (point-max)
+                                        lsp-oxc-fmt--bin-path
+                                        nil fmt-buf nil
+                                        "--stdin-filepath" original-file))))
+            (cond
+             ((not (zerop exit-code))
+              (message "Oxfmt: formatting failed (exit code %d)" exit-code))
+             (t
+              (with-current-buffer original-buffer
+                (replace-buffer-contents fmt-buf)))))))
     (message "Oxfmt: Not active in this buffer")))
 
 ;;;###autoload
