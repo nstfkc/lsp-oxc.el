@@ -48,7 +48,7 @@
   :link '(url-link "https://oxc.rs"))
 
 (defcustom lsp-oxc-active-file-types
-  (list (rx "." (or "tsx" "jsx" "ts" "js" "mts" "mjs" "cts" "cjs" "md" "mdx") eos))
+  (list (rx "." (or "tsx" "jsx" "ts" "js" "mts" "mjs" "cts" "cjs" "md" "mdx" "css" "json") eos))
   "File types that lsp-oxc should activate for."
   :type '(repeat regexp)
   :group 'lsp-oxc)
